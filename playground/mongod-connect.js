@@ -23,7 +23,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp',(error,db) => {
 
 
     db.collection('Users').insertOne({
-        name: 'Ajeet kumar',
+        name: 'Amit kumar',
         age: 25,
         location: 'Bengaluru'
     },(error,result) => {
