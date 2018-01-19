@@ -14,7 +14,9 @@ const todos = [
     },
     {
         _id: new ObjectID(),
-        text: 'Second todo'
+        text: 'Second todo',
+        completed: true,
+        completedAt: 333
     }
 ]
 
@@ -145,4 +147,48 @@ it('should return 404 for non object id', (done) => {
 
 
 
+})
+
+
+describe('PATCH /todos:id' , () => {
+    it ('should update the todo' , (done) => {
+
+            let id = todos[0]._id.toHexString();
+            let text = 'This should be the new text'
+            request(app)
+              .patch(`/todos/${id}`)
+              .send({
+                  completed: true,
+                  text
+              })
+              .expect(200)
+              .expect((res) => {
+                  expect(res.body.todos.text).toBe(text)
+                  expect(res.body.todos.completed).toBe(true)
+                  expect(res.body.todos.completedAt).toBeA('number')
+              })
+              .end(done);
+
+    });
+
+    it ('should clear completedAt when the todo is not clear', (done) => {
+
+        let id = todos[1]._id.toHexString();
+        let text = 'This should be the new text !!'
+        request(app)
+          .patch(`/todos/${id}`)
+          .send({
+              completed: false,
+              text
+          })
+          .expect(200)
+          .expect((res) => {
+              expect(res.body.todos.text).toBe(text)
+              expect(res.body.todos.completed).toBe(false)
+              expect(res.body.todos.completedAt).toNotExist()
+          })
+          .end(done);
+
+
+    });
 })
