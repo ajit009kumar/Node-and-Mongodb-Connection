@@ -43,8 +43,8 @@ var UserSchema = new Schema({
 
 UserSchema.plugin(mongoosastic,{
     hosts: 'http://localhost:9200/',
-//    index: 'tweets',
-//    type: 'tweet',
+    // index: 'customers',
+    // type: 'doc',
 //    esClient: configelastic.getClient()
 });
 

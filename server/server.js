@@ -83,11 +83,23 @@ User.search({
    console.log('response of user', res.hits.hits);
 });
 
+
+Customer.createMapping(function(err, mapping){  
+    if(err){
+      console.log('error creating mapping (you can safely ignore this)');
+      console.log(err);
+    }else{
+      console.log('mapping created!');
+      console.log(mapping);
+    }
+  });
+
+
 Customer
 .search({
   bool: {
     must: {
-      match: {'name': "ajeet"}
+      match: {'name': " ris h u      Raj "}
     }
   }
 },function(err,res){
