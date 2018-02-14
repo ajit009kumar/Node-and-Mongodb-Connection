@@ -1,3 +1,7 @@
+// import { type } from 'os';
+
+// import { get } from 'mongoose';
+
 // import { Promise } from 'mongoose';
 
 require('./config/config');
@@ -12,6 +16,10 @@ const { ObjectID } = require('mongodb');
 var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
 var { User } = require('./models/users');
+var { Customer } = require('./models/customer');
+const elasticsearch = require('elasticsearch');
+
+
 
 var { authenticate } = require('./middleware/authenticate');
 
@@ -21,6 +29,87 @@ const port = process.env.PORT || 3000;
 
 
 app.use(bodyParser.json());
+
+
+
+// User.createMapping({
+//     "analysis" : {
+//       "analyzer":{
+//         "content":{
+//           "type":"custom",
+//           "tokenizer":"whitespace"
+//         }
+//       }
+//     }
+//   },function(err, mapping){
+//       console.log('mapping=====================>', mapping);
+//     // do neat things here
+//   });
+
+
+// User.createMapping(function(err,mapping) {
+//     if(err) {
+//         console.log('error creting mapping');
+//         console.log(err);
+//     }
+//     else{
+//         console.log("mapping creted");
+//         console.log(mapping);
+//     }
+// });
+
+// var stream = User.synchronize();
+// var count = 0;
+// stream.on('data', function() {
+//     count ++;
+// });
+
+// stream.on('close', function() {
+//     console.log("Indexed " + count + " documents ");
+// });
+
+// stream.on('error' , function(err) {
+//     console.log(err);
+// });
+
+
+User.search({
+  bool: {
+      must: {
+          match: {'email.keyword': 'praddep@gmail.com'}
+      }
+  }
+},function(err,res) {
+   console.log('response of user', res.hits.hits);
+});
+
+Customer
+.search({
+  bool: {
+    must: {
+      match: {'name': "ajeet"}
+    }
+  }
+},function(err,res){
+    console.log('response of customer', res.hits.hits);
+    console.log('total number of hits in customer index', res.hits.total);
+});
+
+
+app.post('/customers' , (req,res) => {
+    var customer = new Customer({
+        name: req.body.name,
+        price: req.body.price,
+        email: req.body.email
+    });
+    customer.save().then((doc) => {
+        res.send(doc);
+    },(e) => {
+        res.status(400).send(e);
+    });
+});
+
+
 
 app.post('/todos',(req,res) => {
 
@@ -147,6 +236,8 @@ app.delete('/users/me/token', authenticate, (req,res) => {
         res.status(400).send();
     });
 });
+
+
 
 
 app.listen('3000',() => {

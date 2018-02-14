@@ -5,8 +5,13 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+const mongoosastic = require('mongoosastic');
+// const mongoosastic = require('../../lib/mongoosastic');
+const configelastic = require('./../config/configelastic');
+const Schema = mongoose.Schema
 
-var UserSchema = new mongoose.Schema({
+
+var UserSchema = new Schema({
     email: {
         type: String,
         required: true,
@@ -34,6 +39,17 @@ var UserSchema = new mongoose.Schema({
         }
     }]
 });
+
+
+UserSchema.plugin(mongoosastic,{
+    hosts: 'http://localhost:9200/',
+//    index: 'tweets',
+//    type: 'tweet',
+//    esClient: configelastic.getClient()
+});
+
+// UserSchema.plugin(mongoosastic);
+
 
 //UserSchema.methods.toJSON = function () {
 //    var user = this;
