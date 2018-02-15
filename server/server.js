@@ -165,6 +165,17 @@ Customer.esSearch({
 });
 
 
+Customer.esSearch({
+    query: {
+        term: {
+            name: "gupta" 
+        }
+    }
+},function(err,res) {
+    console.log('response using the term', res.hits.hits);
+});
+
+
 app.post('/customers' , (req,res) => {
     var customer = new Customer({
         name: req.body.name,
