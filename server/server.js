@@ -84,6 +84,18 @@ User.search({
 });
 
 
+User.search({
+    bool:{
+        should: [
+            {match: {'email.keyword': 'praddep@gmail.com'}},
+            {match:{'email.keyword': 'ajeet009kumar@gmail.com'}}
+        ]
+    }
+},function(err,res){
+    console.log('response of user document', res.hits.hits);
+});
+
+
 Customer.createMapping(function(err, mapping){  
     if(err){
       console.log('error creating mapping (you can safely ignore this)');
@@ -93,6 +105,10 @@ Customer.createMapping(function(err, mapping){
       console.log(mapping);
     }
   });
+
+  Customer.synchronize()
+
+//   Customer.synchronize();
 
 
 Customer
@@ -105,6 +121,47 @@ Customer
 },function(err,res){
     console.log('response of customer', res.hits.hits);
     console.log('total number of hits in customer index', res.hits.total);
+});
+
+
+Customer.search({
+        bool:{
+            should:[
+                {match: {'name': ' Rishu  '}},
+                {match:{'name': ' daddu  '}}
+            ]            
+        }
+},function(err,res) {
+    console.log('searching of user using should', res.hits.hits);
+});
+
+Customer.search({
+      bool:{
+          must: {
+              match_all: {}
+          },
+          filter: {
+            match: {
+                name: 'Rishu'
+            }
+          }
+      },
+     
+},function(err,res){
+    console.log('++++++++++++++++++++++++>', res.hits.hits);
+})
+
+
+Customer.esSearch({
+        query: {
+          match: {
+              name: ' Rishu '
+          }
+        },
+        from: 0,
+        size: 2
+},function(err,res) {
+    console.log('res due to pagination',res.hits.hits);
 });
 
 
