@@ -1,0 +1,39 @@
+PUT /employees 
+
+{
+  "mappings": {
+            "doc":{
+                "properties":{
+                    "name": {
+                        "type": "text",
+                        "analyzer": "standard"
+                    },
+                    "email": {
+                        "type": "keyword"
+                    },
+                    "state": {
+                        "type": "text",
+                        "analyzer": "standard"
+                    },
+                    "age": {
+                        "type": "long"
+                    },
+                    "salary": {
+                        "type": "long"
+                    },
+                    "designation": {
+                        "type": "text",
+                        "analyzer": "standard"
+                    }
+                }
+            }
+        },
+        "settings": {
+            "index" : {
+                "number_of_shards" : 1,
+                "number_of_replicas" : 1
+            }
+        }
+}
+
+//Make this request from kibana
