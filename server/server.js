@@ -17,6 +17,7 @@ var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
 var { User } = require('./models/users');
 var { Customer } = require('./models/customer');
+var { Employee } = require('./models/employee');
 const elasticsearch = require('elasticsearch');
 
 
@@ -32,47 +33,6 @@ app.use(bodyParser.json());
 
 
 
-// User.createMapping({
-//     "analysis" : {
-//       "analyzer":{
-//         "content":{
-//           "type":"custom",
-//           "tokenizer":"whitespace"
-//         }
-//       }
-//     }
-//   },function(err, mapping){
-//       console.log('mapping=====================>', mapping);
-//     // do neat things here
-//   });
-
-
-// User.createMapping(function(err,mapping) {
-//     if(err) {
-//         console.log('error creting mapping');
-//         console.log(err);
-//     }
-//     else{
-//         console.log("mapping creted");
-//         console.log(mapping);
-//     }
-// });
-
-// var stream = User.synchronize();
-// var count = 0;
-// stream.on('data', function() {
-//     count ++;
-// });
-
-// stream.on('close', function() {
-//     console.log("Indexed " + count + " documents ");
-// });
-
-// stream.on('error' , function(err) {
-//     console.log(err);
-// });
-
-
 User.search({
   bool: {
       must: {
@@ -80,7 +40,7 @@ User.search({
       }
   }
 },function(err,res) {
-   console.log('response of user', res.hits.hits);
+//    console.log('response of user', res.hits.hits);
 });
 
 
@@ -92,23 +52,19 @@ User.search({
         ]
     }
 },function(err,res){
-    console.log('response of user document', res.hits.hits);
+    // console.log('response of user document', res.hits.hits);
 });
 
 
 Customer.createMapping(function(err, mapping){  
     if(err){
-      console.log('error creating mapping (you can safely ignore this)');
-      console.log(err);
+    //   console.log('error creating mapping (you can safely ignore this)');
+    //   console.log(err);
     }else{
-      console.log('mapping created!');
-      console.log(mapping);
+    //   console.log('mapping created!');
+    //   console.log(mapping);
     }
   });
-
-  Customer.synchronize()
-
-//   Customer.synchronize();
 
 
 Customer
@@ -119,8 +75,8 @@ Customer
     }
   }
 },function(err,res){
-    console.log('response of customer', res.hits.hits);
-    console.log('total number of hits in customer index', res.hits.total);
+    // console.log('response of customer', res.hits.hits);
+    // console.log('total number of hits in customer index', res.hits.total);
 });
 
 
@@ -132,7 +88,7 @@ Customer.search({
             ]            
         }
 },function(err,res) {
-    console.log('searching of user using should', res.hits.hits);
+    // console.log('searching of user using should', res.hits.hits);
 });
 
 Customer.search({
@@ -148,7 +104,7 @@ Customer.search({
       },
      
 },function(err,res){
-    console.log('++++++++++++++++++++++++>', res.hits.hits);
+    // console.log('++++++++++++++++++++++++>', res.hits.hits);
 })
 
 
@@ -159,20 +115,63 @@ Customer.esSearch({
           }
         },
         from: 0,
-        size: 2
+        size: 1
 },function(err,res) {
-    console.log('res due to pagination',res.hits.hits);
+    //  console.log('res due to pagination',res.hits.hits);
 });
 
 
 Customer.esSearch({
     query: {
-        term: {
-            name: "gupta" 
+        match: {
+            name: " gupta " ,
         }
     }
 },function(err,res) {
-    console.log('response using the term', res.hits.hits);
+    //  console.log('response using the term', res.hits.hits);
+});
+
+
+Employee.esSearch({
+    query: {
+        match: {
+            name: "  Rishu  "
+        }
+    }
+},function(err,res) {
+    // console.log('employee search======>', res);
+});
+
+
+Employee.esSearch({
+    query: {
+        bool: {
+            must: {
+                match: {
+                    email: 'rishu13raj@gmail.com'
+                }
+            }
+        }
+    }
+},function(err,res) {
+    console.log('Employee Email search response', res.hits.hits);
+});
+
+
+app.post('/employee', (req,res) => {
+     var employee = new Employee({
+         name: req.body.name,
+         email: req.body.email,
+         age: req.body.age,
+         salary: req.body.salary,
+         state:req.body.state,
+         designation: req.body.designation
+     });
+     employee.save().then((doc) => {
+        res.send(doc);
+     },(e) => {
+         res.status(400).send(e);
+     });
 });
 
 

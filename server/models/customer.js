@@ -12,7 +12,7 @@ var CustomerSchema = new Schema ({
 
 CustomerSchema.plugin(mongoosastic,{
     hosts: [
-        'localhost:9200'
+        'localhost:9200',    
     ],
     'type': 'doc' 
 });
