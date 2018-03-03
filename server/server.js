@@ -40,6 +40,114 @@ var client = new elasticsearch.Client({
     log: 'trace'
   });
 
+
+  client.indices.create({
+     "index": "custom",
+     "body": {
+     "mappings": {
+        "doc": { 
+            "properties": { 
+              "title":    { "type": "text" , "analyzer": "standard" }, 
+              "name":     { "type": "text", "analyzer": "standard" }, 
+              "age":      { "type": "integer" }
+            }
+        }
+    },
+    "settings":{
+        "index" : {
+            "number_of_shards" : 1,
+            "number_of_replicas" : 1
+        }
+    }
+  }
+  });
+
+
+  client.indices.create({
+      "index": "college",
+      "body": {
+        "mappings": {
+            "candidateInfo": {
+                "properties": {
+                   "candidateName": {
+                       "type": "text",
+                       "analyzer": "autocomplete",
+                       "search_analyzer": "standard"
+                   },
+                   "collegeName": {
+                       "type": "text",
+                       "analyzer": "autocomplete",
+                       "search_analyzer": "standard"
+                   },
+                   "contactNumber":{
+                     "type": "text"
+                   },
+                   "location":{
+                     "type": "text"
+                   },
+                   "candidateId": {
+                      "type": "text"
+                   },
+                   "candidateEmail":{
+                      "type": "text",
+                      "analyzer": "email"
+                   }
+                }
+            }
+          },
+          
+          "settings": {
+              "index" : {
+                   "number_of_shards" : 1,
+                   "number_of_replicas" : 1
+               },
+               
+               "analysis": {
+                 
+                   "filter": {
+                    "autocomplete_filter": {
+                       "type": "edge_ngram",
+                       "min_gram": 1,
+                       "max_gram": 20
+                     },
+                     "email": {
+                       "type" : "pattern_capture",
+                       "preserve_original" : true,
+                        "patterns" : [
+                         "([^@]+)",
+                         "(\\p{L}+)",
+                         "(\\d+)",
+                         "@(.+)"
+                       ]
+                       }
+                   },
+                 "analyzer": {
+                   "autocomplete": { 
+                     "type": "custom",
+                     "tokenizer": "standard",
+                     "filter": [
+                       "lowercase",
+                       "autocomplete_filter"
+                     ]
+                   },
+                 "email": {
+                    "tokenizer": "uax_url_email",
+                     "filter": [
+                       "email",
+                       "lowercase",
+                       "unique"
+                     ]
+                   }
+               }
+             }
+         }
+        }
+  });
+
+
+
+
+
 // client.ping({
 //     requestTimeout: 30000,
 //   }, function (error) {
