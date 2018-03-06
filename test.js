@@ -1,49 +1,17 @@
+// import { json } from '../../AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/body-parser';
+
 var json2csv = require('json2csv');
 var fs = require('fs');
 var fields = ['name', 'age', 'rollNo'];
+let jsonvalue = '';
 
-var friends = [ 
-    {
-      "name": "ajeet kumar",
-      "age": 23,
-      "rollNo": 61468
-    },
-    {
-        "name": "rishu",
-        "age": 23,
-        "rollNo": 6213
-    },
-    {
-        "name": "abhishek",
-        "age": 23,
-        "rollNo": 6180
-    },
-    {
-        "name": "shaurya",
-        "age": 23,
-        "rollNo": 61138
-    },
-    {
-        "name": "shushobhith",
-        "age": 24,
-        "rollNo": 6290
-    },
-    {
-        "name": "HOd",
-        "age": 26,
-        "rollNo": 568
-    },
-    {
-        "name": "Daddu gupta",
-        "age": 24,
-        "rollNo": 25
-    },
-]
+var friends = {"userId": "12345678901", "userName": "pradeep prakash", "location": "bengaluru","contact": ""}
+ jsonvalue += `${JSON.stringify(friends)}\r\n`;
 
 console.log(friends)
 
-var csv = json2csv({ data: friends, fields: fields });
-fs.writeFile('output.csv', csv, function(err) {
+// var csv = json2csv({ data: friends, fields: fields });
+fs.appendFile('C:\\Users\\MYANATOMY\\Downloads\\node-todo-api\\logstashInput\\students.json', jsonvalue, function(err) {
     if (err) throw err;
     console.log('file saved');
   });
